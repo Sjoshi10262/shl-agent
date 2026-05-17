@@ -1,8 +1,5 @@
 """
 SHL Assessment Recommendation Agent — FastAPI Application
-
-A production-ready conversational AI system for recommending SHL Individual
-Test Solutions from the SHL Product Catalog.
 """
 
 import logging
@@ -15,7 +12,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.routes import router
 from app.retriever import retriever
 
-# Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
@@ -25,7 +21,6 @@ logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Initialize resources on startup."""
     logger.info("Initializing SHL Assessment Retriever...")
     try:
         retriever.load()
@@ -38,23 +33,22 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="SHL Assessment Recommendation Agent",
-    description=(
-        "A conversational AI agent that recommends SHL Individual Test Solutions "
-        "from the SHL Product Catalog based on hiring manager requirements."
-    ),
+    description="Recommends SHL Individual Test Solutions based on hiring requirements.",
     version="1.0.0",
     lifespan=lifespan,
+    docs_url="/docs",
+    redoc_url="/redoc",
 )
 
-# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_methods=["GET", "POST"],
+    allow_origin_regex=".*",
+    allow_credentials=False,
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Routes
 app.include_router(router)
 
 
