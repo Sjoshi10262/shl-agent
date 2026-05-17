@@ -1,23 +1,13 @@
-"""
-SHL Assessment Recommendation Agent — FastAPI Application
-"""
-
 import logging
 import os
 from contextlib import asynccontextmanager
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
 from app.routes import router
 from app.retriever import retriever
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
 logger = logging.getLogger(__name__)
-
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -28,12 +18,9 @@ async def lifespan(app: FastAPI):
     except Exception as e:
         logger.error(f"Failed to load retriever: {e}")
     yield
-    logger.info("Shutting down SHL Assessment Agent.")
-
 
 app = FastAPI(
     title="SHL Assessment Recommendation Agent",
-    description="Recommends SHL Individual Test Solutions based on hiring requirements.",
     version="1.0.0",
     lifespan=lifespan,
     docs_url="/docs",
@@ -50,7 +37,6 @@ app.add_middleware(
 )
 
 app.include_router(router)
-
 
 if __name__ == "__main__":
     import uvicorn
