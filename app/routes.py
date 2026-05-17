@@ -3,6 +3,7 @@ FastAPI route definitions for the SHL Assessment Recommendation API.
 """
 
 from fastapi import APIRouter, HTTPException
+from fastapi.responses import JSONResponse
 from app.models import ChatRequest, ChatResponse, HealthResponse
 from app.rag import run_rag_pipeline
 import logging
@@ -10,6 +11,20 @@ import logging
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
+
+
+@router.get("/")
+async def root():
+    """Root endpoint — confirms the API is live."""
+    return JSONResponse({
+        "name": "SHL Assessment Recommendation Agent",
+        "status": "running",
+        "endpoints": {
+            "health": "GET /health",
+            "chat": "POST /chat",
+            "docs": "GET /docs"
+        }
+    })
 
 
 @router.get("/health", response_model=HealthResponse)
@@ -22,7 +37,7 @@ async def health_check():
 async def chat(request: ChatRequest):
     """
     Conversational SHL assessment recommendation endpoint.
-    
+
     - Accepts full conversation history in messages[]
     - Returns reply, 0-10 grounded recommendations, and end_of_conversation flag
     - Stateless: all context must be in the messages array
@@ -35,7 +50,7 @@ async def chat(request: ChatRequest):
                     status_code=422,
                     detail=f"Invalid role '{msg.role}'. Must be 'user' or 'assistant'."
                 )
-        
+
         # Check at least one user message exists
         user_messages = [m for m in request.messages if m.role == "user"]
         if not user_messages:
@@ -43,10 +58,10 @@ async def chat(request: ChatRequest):
                 status_code=422,
                 detail="At least one user message is required."
             )
-        
+
         # Convert to dicts for the pipeline
         messages = [{"role": m.role, "content": m.content} for m in request.messages]
-        
+
         # Run RAG pipeline
         response = run_rag_pipeline(messages)
         return response
