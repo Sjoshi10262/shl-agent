@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: shl-assessment-agent
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: "pip install -r requirements.txt && python -c \"from app.retriever import retriever; retriever.load()\""
+    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    healthCheckPath: /health
+    envVars:
+      - key: LLM_PROVIDER
+        value: gemini
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: PYTHON_VERSION
+        value: "3.11.0"

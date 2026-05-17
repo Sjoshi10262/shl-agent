@@ -1,0 +1,22 @@
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+pydantic==2.8.2
+sentence-transformers==3.0.1
+numpy==1.26.4
+requests==2.32.3
+beautifulsoup4==4.12.3
+python-dotenv==1.0.1
+
+# LLM Providers (install whichever you use)
+google-generativeai==0.7.2
+openai==1.40.0
+groq==0.9.0
+
+# Optional: LangChain integration
+# langchain==0.2.12
+# langchain-community==0.2.11
+
+# Testing
+httpx==0.27.0
+pytest==8.3.2
+pytest-asyncio==0.23.8
